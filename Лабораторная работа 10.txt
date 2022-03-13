@@ -1,0 +1,187 @@
+# Отчет по лабораторной работе N 10 по курсу
+# "Фундаментальная информатика"
+
+Студент группы: M80-113Б, Агапов Владимир Сергеевич\
+Контакты: agapow.volodya2018@gmail.com\
+Работа выполнена: 13.03.2022\
+Преподаватель: Довженко Анастасия Александровна
+
+## 1. Тема
+
+Отладчик системы программирования OC UNIX
+
+## 2. Цель работы
+
+Научиться отлаживать программы в OC UNIX
+
+## 3. Задание
+
+Провести отладку написанной программы при помощи средств OC UNIX
+
+## 4. Оборудование
+
+Процессор: Intel Core i5-10300H @ 4x 2.5GH\
+ОП: 8000 Мб\
+SSD: 256 Гб\
+Монитор: 1920x1080\
+
+
+## 5. Программное обеспечение
+
+Операционная система семейства: **linux (ubuntu)**, версия **20.04**\
+
+
+## 6. Идея, метод, алгоритм решения задачи
+
+Написать программу\
+Провести отладку\
+
+## 7. Сценарий выполнения работы
+
+1.Написать программу (в моём случае если введенное число больше 0, то оно положительное, а если меньше, то отрицательное. Гы)\
+2.Включить отладчик GDB\
+3.Написать start для запуска отладчика\
+4.При помощи функции next (следующая строка) и step (сделать "шаг") пошагово пропустить код через отладчик\
+5.При окончании отладки написать команду quit для выхода из отладчика\
+Примечание автора: Команда list выводит текущий код, команда run выполняет код, команда b n делает остановку на строчке n или месте n, команда ptype n выводит тип данных переменной n, команда print n выводит значение n.
+
+## 8. Распечатка протокола
+
+
+```
+vladimir@vladimir-VirtualBox:~$ gcc -g laba10.c -o laba10
+laba10.c: In function ‘main’:
+laba10.c:6:13: warning: format ‘%d’ expects argument of type ‘int *’, but argument 2 has type ‘int’ [-Wformat=]
+    6 |     scanf("%d", a);
+      |            ~^   ~
+      |             |   |
+      |             |   int
+      |             int *
+vladimir@vladimir-VirtualBox:~$ gdb laba10
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from laba10...
+(gdb) help
+List of classes of commands:
+
+aliases -- Aliases of other commands.
+breakpoints -- Making program stop at certain points.
+data -- Examining data.
+files -- Specifying and examining files.
+internals -- Maintenance commands.
+obscure -- Obscure features.
+running -- Running the program.
+stack -- Examining the stack.
+status -- Status inquiries.
+support -- Support facilities.
+tracepoints -- Tracing of program execution without stopping the program.
+user-defined -- User-defined commands.
+
+Type "help" followed by a class name for a list of commands in that class.
+Type "help all" for the list of all commands.
+Type "help" followed by command name for full documentation.
+Type "apropos word" to search for commands related to "word".
+Type "apropos -v word" for full documentation of commands related to "word".
+Command name abbreviations are allowed if unambiguous.
+(gdb) list
+1	#include <stdio.h>
+2	
+3	int main(void) {
+4	
+5	    int a;
+6	    scanf("%d", a);
+7	
+8	    if (a > 0){
+9	        printf("%d - число положительное:\n", a);
+10	    } else {
+(gdb) b 3
+Breakpoint 1 at 0x1169: file laba10.c, line 3.
+(gdb) run
+Starting program: /home/daniil/laba10 
+
+Breakpoint 1, main () at laba10.c:3
+3	int main(void) {
+(gdb) step
+6	    scanf("%d", a);
+(gdb) next
+5
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7e2f4b5 in __vfscanf_internal (s=<optimized out>, 
+    format=<optimized out>, argptr=argptr@entry=0x7fffffffdf20, 
+    mode_flags=mode_flags@entry=2) at vfscanf-internal.c:1895
+1895	vfscanf-internal.c: Нет такого файла или каталога.
+(gdb) n
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+(gdb) print a
+No symbol "a" in current context.
+(gdb) next
+The program is not being run.
+(gdb) break main
+Note: breakpoint 1 also set at pc 0x555555555169.
+Breakpoint 2 at 0x555555555169: file laba10.c, line 3.
+(gdb) next
+The program is not being run.
+(gdb) run
+Starting program: /home/daniil/laba10 
+
+Breakpoint 1, main () at laba10.c:3
+3	int main(void) {
+(gdb) next
+6	    scanf("%d", a);
+(gdb) print a
+$1 = 0
+(gdb) ptype a
+type = int
+(gdb) set var a=9
+(gdb) print a
+$2 = 9
+(gdb) next
+9
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7e2f4b5 in __vfscanf_internal (s=<optimized out>, 
+    format=<optimized out>, argptr=argptr@entry=0x7fffffffdf20, 
+    mode_flags=mode_flags@entry=2) at vfscanf-internal.c:1895
+1895	vfscanf-internal.c: Нет такого файла или каталога.
+(gdb) set args 8
+(gdb) continue
+Continuing.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+(gdb) quit
+
+
+```
+
+## 9. Дневник отладки
+
+*Должен содержать дату и время сеансов отладки и основные события (ошибки в сценарии и программе, нестандартные ситуации) и краткие комментарии к ним. В дневнике отладки приводятся сведения об использовании других ЭВМ, существенном участии преподавателя и других лиц в написании и отладке программы.*
+
+| №  | Лаб. или дом. | Дата       | Время | Событие                  | Действие по исправлению | Примечание  |
+|----|---------------|------------|-------|--------------------------|-------------------------|-------------|
+| 1  | 
+
+
+## 10. Замечания автора по существу работы
+Замечаний нет
+
+## 11. Выводы
+
+В ходе работы я научился проводить отладку программы при помощи средств GDB. Работа мне понравилась.
